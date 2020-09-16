@@ -1,16 +1,19 @@
 import React from 'react';
-import './App.css';
 import { Header } from './Header';
 import { HomePage } from './HomePage';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
+import { fontFamily, fontSize, gray2 } from './Styles';
 
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <div className="App" css={css`
+      font-family: ${fontFamily};
+      font-size: ${fontSize};
+      color: ${gray2};
+    `}>
       <Header/>
       <HomePage/>
-      <h1>
-        Hi
-      </h1>
     </div>
   );
 }
