@@ -26,14 +26,17 @@ font-size: ${fontSize};
 padding: 5px 10px;
 color: white;
 cursor: pointer;
+
 :hover {
-background-color: ${primary1};
+    background-color: ${primary1};
 }
+
 :focus {
-outline-color: ${primary2};
+    outline-color: ${primary2}; 
 }
+
 :disabled {
-opacity: 0.5;
-cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 `;
