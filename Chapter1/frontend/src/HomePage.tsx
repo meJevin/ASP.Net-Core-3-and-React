@@ -25,6 +25,8 @@ export const HomePage = () => {
     const [questions, setQuestions] = useState<QuestionData[] | null>(null);
     const [questionsLoading, setQuestionsLoading] = useState<boolean>(true);
 
+    console.log("Rendered");
+
     return <Page title="niggers?">
         <div
             css={css`
