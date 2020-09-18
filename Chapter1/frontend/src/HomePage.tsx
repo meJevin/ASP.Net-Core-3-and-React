@@ -36,10 +36,19 @@ export const HomePage = () => {
             <PageTitle>Unanswered questions</PageTitle>
             <PrimaryButton>Ask a question</PrimaryButton>
         </div>
-        
-        <QuestionList 
+        {questionsLoading ? 
+        (<div css={css`
+            font-size: 16px;
+            font-style: italic;
+        `}>
+            Loading...
+        </div>)
+        :
+        (<QuestionList 
             data={questions || []}
-            />
+            />)
+        }
+        
     </Page>
 };
 
