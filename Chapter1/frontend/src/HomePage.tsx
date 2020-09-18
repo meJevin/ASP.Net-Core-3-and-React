@@ -25,7 +25,9 @@ export const HomePage = () => {
     const [questions, setQuestions] = useState<QuestionData[] | null>(null);
     const [questionsLoading, setQuestionsLoading] = useState<boolean>(true);
 
-    console.log("Rendered");
+    const handleAskQuestionClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        console.log(`Mouse X,Y: ${event.clientX}, ${event.clientY}`)
+    };
 
     return <Page title="niggers?">
         <div
@@ -36,7 +38,9 @@ export const HomePage = () => {
             `}
             >
             <PageTitle>Unanswered questions</PageTitle>
-            <PrimaryButton>Ask a question</PrimaryButton>
+            <PrimaryButton onClick={handleAskQuestionClick}>
+                Ask a question
+            </PrimaryButton>
         </div>
         {questionsLoading ? 
         (<div css={css`
