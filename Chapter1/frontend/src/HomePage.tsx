@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useEffect, useState } from "react";
 import { PrimaryButton } from "./Styles";
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -8,8 +9,23 @@ import { Page } from "./Page";
 import { PageTitle } from "./PageTitle";
 import { Question } from "./Question";
 
-export const HomePage = () => (
-    <Page title="niggers?">
+export const HomePage = () => {
+ 
+    useEffect(() => {
+        const fetchQuestions = async (): Promise<void> => {
+            const unansweredQuestions = await getUnansweredQuestions();
+
+            setQuestions(unansweredQuestions);
+            setQuestionsLoading(false);
+        };
+
+        fetchQuestions();
+    }, []);
+
+    const [questions, setQuestions] = useState<QuestionData[] | null>(null);
+    const [questionsLoading, setQuestionsLoading] = useState<boolean>(true);
+
+    return <Page title="niggers?">
         <div
             css={css`
             display: flex;
@@ -22,9 +38,10 @@ export const HomePage = () => (
         </div>
         
         <QuestionList 
-            data={getUnansweredQuestions()}/>
+            data={questions || []}
+            />
     </Page>
-);
+};
 
 function renderQuestionInList(qData: QuestionData): JSX.Element {
     return (
@@ -35,7 +52,7 @@ function renderQuestionInList(qData: QuestionData): JSX.Element {
             <span>
                 Question info: {qData.content}
             </span>
-            <Question data={qData}/>
+            <Question data={qData || []}/>
         </div>
     );
 }
