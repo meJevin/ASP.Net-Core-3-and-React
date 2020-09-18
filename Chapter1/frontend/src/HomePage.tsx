@@ -22,8 +22,7 @@ export const HomePage = () => (
         </div>
         
         <QuestionList 
-            data={getUnansweredQuestions()}
-            renderQuestion={renderQuestionInList}/>
+            data={getUnansweredQuestions()}/>
     </Page>
 );
 
