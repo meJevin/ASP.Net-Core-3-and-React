@@ -8,8 +8,9 @@ import { getUnansweredQuestions, QuestionData } from "./QuestionData";
 import { Page } from "./Page";
 import { PageTitle } from "./PageTitle";
 import { Question } from "./Question";
+import { RouteComponentProps } from "react-router-dom";
 
-export const HomePage = () => {
+export const HomePage : React.FC<RouteComponentProps> = (props) => {
  
     useEffect(() => {
         const fetchQuestions = async (): Promise<void> => {
@@ -24,10 +25,9 @@ export const HomePage = () => {
 
     const [questions, setQuestions] = useState<QuestionData[] | null>(null);
     const [questionsLoading, setQuestionsLoading] = useState<boolean>(true);
-    const [counter, setCounter] = useState<number>(0);
 
     const handleAskQuestionClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        setCounter(counter + 1);
+        props.history.push("/ask");
     };
 
     return <Page title="niggers?">
