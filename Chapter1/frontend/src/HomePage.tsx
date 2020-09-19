@@ -24,9 +24,10 @@ export const HomePage = () => {
 
     const [questions, setQuestions] = useState<QuestionData[] | null>(null);
     const [questionsLoading, setQuestionsLoading] = useState<boolean>(true);
+    const [counter, setCounter] = useState<number>(0);
 
     const handleAskQuestionClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        console.log(`Mouse X,Y: ${event.clientX}, ${event.clientY}`)
+        setCounter(counter + 1);
     };
 
     return <Page title="niggers?">
