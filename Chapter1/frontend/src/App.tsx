@@ -9,7 +9,7 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { SearchPage } from './SearchPage';
 import { AskPage } from './AskPage';
 import { SignInPage } from './SignInPage';
-
+import { QuestionPage } from './QuestionPage';
 import { NotFoundPage } from './NotFoundPage';
 
 const App: React.FC = () => {
@@ -34,6 +34,8 @@ const App: React.FC = () => {
           <Route path="/ask" component={AskPage}/>
           
           <Route path="/signin" component={SignInPage}/>
+
+          <Route path="/question/:questionId" component={QuestionPage}/>
 
           <Route component={NotFoundPage}/>
         </Switch>
