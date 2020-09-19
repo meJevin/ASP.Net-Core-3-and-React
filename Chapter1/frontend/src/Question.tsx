@@ -4,6 +4,7 @@ import { css, jsx } from "@emotion/core";
 import { QuestionData } from "./QuestionData";
 import { gray2, gray3 } from "./Styles";
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface Props {
     data: QuestionData;
@@ -23,7 +24,13 @@ export const Question: React.FC<Props> = (props) => {
             font-size: 19px;
             `}
             >
-            {props.data.title}
+                <Link to={`question/${props.data.questionId}`}
+                    css={css`
+                    text-decoration: none;
+                    color: ${gray2};
+                    `}>
+                        {props.data.title}
+                    </Link>
             </div>
 
             {props.showContent && (
