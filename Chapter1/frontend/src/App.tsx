@@ -10,6 +10,8 @@ import { SearchPage } from './SearchPage';
 import { AskPage } from './AskPage';
 import { SignInPage } from './SignInPage';
 
+import { NotFoundPage } from './NotFoundPage';
+
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -39,6 +41,10 @@ const App: React.FC = () => {
           
           <Route path="/signin">
             <SignInPage/>
+          </Route>
+
+          <Route>
+            <NotFoundPage/>
           </Route>
         </Switch>
       </div>
