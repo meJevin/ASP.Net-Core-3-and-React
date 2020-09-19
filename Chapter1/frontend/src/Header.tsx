@@ -3,6 +3,7 @@ import {UserIcon} from "./UserIcon";
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { fontFamily, fontSize, gray1, gray2, gray5 } from './Styles';
+import { Link } from "react-router-dom";
 
 export const Header: React.FC  = () => {
 
@@ -24,7 +25,7 @@ export const Header: React.FC  = () => {
         border-bottom: 1px solid ${gray5};
         box-shadow: 0 3px 7px 0 rgba(110, 112, 114, 0.21);
         `}>
-            <a href="./" 
+            <Link to="/" 
                 css={css`
                 font-size: 24px;
                 font-weight: bold;
@@ -32,7 +33,7 @@ export const Header: React.FC  = () => {
                 text-decoration: none;
             `}>
                 Q & A
-            </a>
+            </Link>
 
             <input type="text" placeholder="Search..."
                     css={css`
@@ -53,7 +54,7 @@ export const Header: React.FC  = () => {
                 onChange={handleSearchInputChange}
             />
 
-        <a href="./signin"
+        <Link to="/signin"
             css={css`
             font-family: ${fontFamily};
             font-size: ${fontSize};
@@ -73,6 +74,6 @@ export const Header: React.FC  = () => {
             <span>
                 Sign In
             </span>
-        </a>
+        </Link>
     </div>)
 };
