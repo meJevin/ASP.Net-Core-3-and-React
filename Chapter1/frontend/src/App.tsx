@@ -27,25 +27,15 @@ const App: React.FC = () => {
         <Switch>
           <Redirect from="/home" to="/"/>
 
-          <Route exact path="/">
-            <HomePage/>
-          </Route>
+          <Route exact path="/" component={HomePage}/>
 
-          <Route path="/search">
-            <SearchPage/>
-          </Route>
+          <Route path="/search" component={SearchPage}/>
           
-          <Route path="/ask">
-            <AskPage/>
-          </Route>
+          <Route path="/ask" component={AskPage}/>
           
-          <Route path="/signin">
-            <SignInPage/>
-          </Route>
+          <Route path="/signin" component={SignInPage}/>
 
-          <Route>
-            <NotFoundPage/>
-          </Route>
+          <Route component={NotFoundPage}/>
         </Switch>
       </div>
     </BrowserRouter>
