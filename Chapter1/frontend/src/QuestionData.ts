@@ -57,4 +57,22 @@ export const getUnansweredQuestions = async (): Promise<QuestionData[]> => {
     await wait(500);
     return questions.filter(q => q.answers.length === 0);
 };
+
+export const getQuestion = async (
+    questionId: number
+): Promise<QuestionData | null> => 
+{
+    await wait(500);
+
+    const foundQuestion = questions.find(q => q.questionId === questionId);
+
+    if (foundQuestion) 
+    {
+        return foundQuestion;
+    }
+    else 
+    {
+        return null;
+    }
+};
     
