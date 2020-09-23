@@ -75,4 +75,17 @@ export const getQuestion = async (
         return null;
     }
 };
+
+export const searchQuestions = async (criteria: string)
+: Promise<QuestionData[]> => {
+    await wait(500);
+
+    return questions.filter(
+        q =>
+        q.title.toLowerCase().indexOf(criteria.toLowerCase()) >=
+        0 ||
+        q.content.toLowerCase().indexOf(criteria.toLowerCase()) >=
+        0,
+    );
+};
     
