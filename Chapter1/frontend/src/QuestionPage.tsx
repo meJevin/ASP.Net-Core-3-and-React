@@ -6,6 +6,7 @@ import { FC, useState, Fragment, useEffect } from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { gray3, gray6 } from './Styles';
+import { AnswerList } from './AnswerList';
 
 interface RouteParams {
     questionId: string;
@@ -70,6 +71,8 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
                             ${question.created.toLocaleDateString()}
                             ${question.created.toLocaleTimeString()}`}
                         </div>
+
+                        <AnswerList data={question.answers}/>
                     </Fragment>
                 )}
             </div>
