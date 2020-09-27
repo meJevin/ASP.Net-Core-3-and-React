@@ -8,3 +8,5 @@ export const AskPage: React.FC = () => {
         </Page>
     )
 }
+
+export default AskPage;
