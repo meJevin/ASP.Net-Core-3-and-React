@@ -8,6 +8,9 @@ import { css, jsx } from '@emotion/core';
 import { gray3, gray6 } from './Styles';
 import { AnswerList } from './AnswerList';
 
+import { Form } from './Form';
+import { Field } from './Field';
+
 interface RouteParams {
     questionId: string;
 }
@@ -53,18 +56,18 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
                 {question !== null && (
                     <Fragment>
                         <p
-                        css={css`
-                        margin-top: 0px;
-                        background-color: white;
+                            css={css`
+                            margin-top: 0px;
+                            background-color: white;
                         `}
                         >
                         {question.content}
                         </p>
                         <div
-                        css={css`
-                        font-size: 12px;
-                        font-style: italic;
-                        color: ${gray3};
+                            css={css`
+                            font-size: 12px;
+                            font-style: italic;
+                            color: ${gray3};
                         `}
                         >
                             {`Asked by ${question.userName} on
@@ -73,6 +76,16 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
                         </div>
 
                         <AnswerList data={question.answers}/>
+
+                        <div
+                            css={css`
+                            margin-top: 20px;
+                            `}
+                        >
+                            <Form submitCaption="Submit Your Answer">
+                                <Field name="content" label="Your Answer" type="TextArea" />
+                            </Form>
+                        </div>
                     </Fragment>
                 )}
             </div>
