@@ -23,8 +23,6 @@ export const Form : React.FC<Props> = (props) => {
 
     const [values, setValues] = useState<Values>({});
 
-    console.log(values);
-
     const setFormValueHandler = (fieldName: string, value: any) => {
         const newValues = {...values};
         newValues[fieldName] = value;
