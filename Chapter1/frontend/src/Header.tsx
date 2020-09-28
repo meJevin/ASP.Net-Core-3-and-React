@@ -1,14 +1,19 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
 import {UserIcon} from "./UserIcon";
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { fontFamily, fontSize, gray1, gray2, gray5 } from './Styles';
-import { Link } from "react-router-dom";
+import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 
-export const Header: React.FC  = () => {
+export const Header: React.FC<RouteComponentProps>  = (props) => {
+
+    const searchParams = new URLSearchParams(props.location.search);
+    const criteria = searchParams.get('criteria') || '';
+
+    const [search, setSearch] = useState(criteria);
 
     const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        console.log(`Seach for ${e.target.value}`);
+        setSearch(e.target.value);
     };
 
     return (<div
@@ -35,24 +40,27 @@ export const Header: React.FC  = () => {
                 Q & A
             </Link>
 
-            <input type="text" placeholder="Search..."
-                    css={css`
-                    box-sizing: border-box;
-                    font-family: ${fontFamily};
-                    font-size: ${fontSize};
-                    padding: 8px 10px;
-                    border: 1px solid ${gray5};
-                    border-radius: 3px;
-                    color: ${gray2};
-                    background-color: white;
-                    width: 200px;
-                    height: 30px;
-                    :focus {
-                        outline-color: ${gray5};
-                    }
-            `}
-                onChange={handleSearchInputChange}
-            />
+            <form>
+                <input type="text" placeholder="Search..."
+                        css={css`
+                        box-sizing: border-box;
+                        font-family: ${fontFamily};
+                        font-size: ${fontSize};
+                        padding: 8px 10px;
+                        border: 1px solid ${gray5};
+                        border-radius: 3px;
+                        color: ${gray2};
+                        background-color: white;
+                        width: 200px;
+                        height: 30px;
+                        :focus {
+                            outline-color: ${gray5};
+                        }
+                `}
+                    onChange={handleSearchInputChange}
+                    value={search}
+                />
+            </form>
 
         <Link to="/signin"
             css={css`
@@ -77,3 +85,5 @@ export const Header: React.FC  = () => {
         </Link>
     </div>)
 };
+
+export const HeaderWithRouter = withRouter(Header);
