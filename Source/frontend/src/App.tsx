@@ -7,10 +7,11 @@ import { fontFamily, fontSize, gray2 } from './Styles';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { SearchPage } from './SearchPage';
-const AskPage = lazy(() => import("./AskPage"));
 import { SignInPage } from './SignInPage';
 import { QuestionPage } from './QuestionPage';
 import { NotFoundPage } from './NotFoundPage';
+
+const AskPage = lazy(() => import("./AskPage"));
 
 const App: React.FC = () => {
   return (
