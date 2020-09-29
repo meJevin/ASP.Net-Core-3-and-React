@@ -101,8 +101,8 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
                                     ]
                                 }}
                                 onSubmit={handleSubmit}
-                                successMessage="There was a problem with your answer"
-                                failureMessage="Your answer was successfully submitted"
+                                successMessage="Your answer was successfully submitted"
+                                failureMessage="There was a problem with your answer"
                                 >
                                 <Field name="content" label="Your Answer" type="TextArea" />
                             </Form>
