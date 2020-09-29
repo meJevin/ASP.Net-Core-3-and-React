@@ -2,13 +2,13 @@ import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Page } from './Page'
 import { QuestionData, getQuestion } from './QuestionData';
-import { FC, useState, Fragment, useEffect } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { gray3, gray6 } from './Styles';
 import { AnswerList } from './AnswerList';
 
-import { Form } from './Form';
+import { Form, MinLength, Required } from './Form';
 import { Field } from './Field';
 
 interface RouteParams {
@@ -82,7 +82,13 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
                             margin-top: 20px;
                             `}
                         >
-                            <Form submitCaption="Submit Your Answer">
+                            <Form submitCaption="Submit Your Answer"
+                                validationRules={{
+                                    content: [
+                                        {validator: Required},
+                                        {validator: MinLength, arg: 50}
+                                    ]
+                                }}>
                                 <Field name="content" label="Your Answer" type="TextArea" />
                             </Form>
                         </div>
