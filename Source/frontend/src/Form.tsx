@@ -204,7 +204,7 @@ export const Required: Validator = (value: any): string => {
 };
 
 export const MinLength: Validator = (value: string, minLength: number): string => {
-    if (value === undefined || value !== '' || value.length < minLength) {
+    if (value === undefined || value === '' || value.length < minLength) {
         return "This must contain at least " + minLength + " characters";
     } 
 
