@@ -1,14 +1,14 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Page } from './Page'
-import { QuestionData, getQuestion } from './QuestionData';
+import { QuestionData, getQuestion, postAnswer } from './QuestionData';
 import { useState, Fragment, useEffect } from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { gray3, gray6 } from './Styles';
 import { AnswerList } from './AnswerList';
 
-import { Form, MinLength, Required } from './Form';
+import { Form, MinLength, Required, SubmitResult, Values } from './Form';
 import { Field } from './Field';
 
 interface RouteParams {
@@ -31,6 +31,17 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
             fetchQuestion(questionId);
         }
     }, [props.match.params.questionId]);
+
+    const handleSubmit = async (values: Values): Promise<SubmitResult> => {
+        const result = await postAnswer({
+            questionId: question!.questionId,
+            content: values.content,
+            userName: "Michael",
+            created: new Date(),
+        });
+
+        return { success: result ? true : false };
+    }
 
     return (
         <Page title="Question Page">
@@ -88,7 +99,11 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
                                         {validator: Required},
                                         {validator: MinLength, arg: 50}
                                     ]
-                                }}>
+                                }}
+                                onSubmit={handleSubmit}
+                                successMessage="There was a problem with your answer"
+                                failureMessage="Your answer was successfully submitted"
+                                >
                                 <Field name="content" label="Your Answer" type="TextArea" />
                             </Form>
                         </div>
