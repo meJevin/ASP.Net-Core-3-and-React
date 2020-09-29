@@ -2,7 +2,6 @@ import React, { useState, createContext } from 'react';
 import { PrimaryButton, gray5, gray6 } from './Styles';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import { string } from 'prop-types';
 
 export interface Values {
     [key: string]: any;
@@ -11,17 +10,79 @@ export interface Values {
 export interface FormContextProps {
     formValues: Values;
     setFormValue?: (fieldName: string, values: any) => void;
+    errors: Errors;
+    validate?: (fieldName: string) => void;
+    touched: Touched;
+    setTouched?: (fieldName: string) => void;
 }
 
-export const FormContext = createContext<FormContextProps>({formValues: {}});
+export const FormContext = createContext<FormContextProps>({formValues: {}, touched: {}, errors: {}});
+
+type Validator = (value: any, args?: any) => string;
+
+interface Validation {
+    validator: Validator;
+    arg?: any;
+}
+
+interface ValidationProp {
+    [key: string]: Validation | Validation[];
+}
 
 interface Props {
     submitCaption?: string;
+    validationRules?: ValidationProp;
+}
+
+export interface Errors {
+    [key: string]: string[];
+}
+
+export interface Touched {
+    [key: string]: boolean;
 }
 
 export const Form : React.FC<Props> = (props) => {
 
     const [values, setValues] = useState<Values>({});
+    const [errors, setErrors] = useState<Errors>({});
+    const [touched, setTouched] = useState<Touched>({});
+
+    const validate = (fieldName: string): string[] => {
+        if (!props.validationRules) {
+            return [];
+        }
+        if (!props.validationRules[fieldName]) {
+            return [];
+        }
+
+        const fieldErrors: string[] = [];
+
+        let rules;
+        if (Array.isArray(props.validationRules[fieldName])) {
+            rules = props.validationRules[fieldName] as Validation[];
+
+            rules.forEach(rule => {
+                const error = rule.validator(values[fieldName], rule.arg);
+
+                if (error) {
+                    fieldErrors.push(error);
+                }
+            });
+        }
+        else {
+            rules = props.validationRules[fieldName] as Validation;
+            const error = rules.validator(values[fieldName], rules.arg);
+
+            if (error) {
+                fieldErrors.push(error);
+            }
+        }
+
+        setErrors({...errors, [fieldName]: fieldErrors});
+
+        return fieldErrors;
+    }
 
     const setFormValueHandler = (fieldName: string, value: any) => {
         const newValues = {...values};
@@ -31,7 +92,17 @@ export const Form : React.FC<Props> = (props) => {
     };
 
     return (
-        <FormContext.Provider value={{formValues: values, setFormValue: setFormValueHandler}}>
+        <FormContext.Provider value={
+            {
+                formValues: values,
+                setFormValue: setFormValueHandler,
+                errors,
+                validate,
+                touched,
+                setTouched: (fieldName: string) => {
+                    setTouched({ ...touched, [fieldName]: true });
+                }
+            }}>
             <form noValidate={true}>
                 <fieldset
                     css={css`
@@ -62,3 +133,19 @@ export const Form : React.FC<Props> = (props) => {
         </FormContext.Provider>
     )
 }
+
+export const Required: Validator = (value: any): string => {
+    if (value === undefined || value == null || value === '') {
+        return 'This must be populated';
+    }
+
+    return '';
+};
+
+export const MinLength: Validator = (value: string, minLength: number): string => {
+    if (value === undefined || value !== '' || value.length < minLength) {
+        return "This must contain at least " + minLength + " characters";
+    } 
+
+    return '';
+};
