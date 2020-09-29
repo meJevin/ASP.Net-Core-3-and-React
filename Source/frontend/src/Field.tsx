@@ -11,7 +11,7 @@ import {
 
 import React from 'react'
 
-import { FormContext, FormContextProps } from './Form';
+import { FormContext } from './Form';
 
 interface Props {
     name: string;
@@ -26,6 +26,21 @@ export const Field: React.FC<Props> = (props) => {
     const handleFieldChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
         if (formContext.setFormValue) {
             formContext.setFormValue(props.name, e.currentTarget.value);
+        }
+
+        if (formContext.touched[props.name]) {
+            if (formContext.validate) {
+                formContext.validate(props.name);
+            }
+        }
+    };
+
+    const handleBlur = () => {
+        if (formContext.setTouched) {
+            formContext.setTouched(props.name);
+        }
+        if (formContext.validate) {
+            formContext.validate(props.name);
         }
     };
 
@@ -57,6 +72,7 @@ export const Field: React.FC<Props> = (props) => {
                             css={baseCSS} 
                             onChange={handleFieldChange}
                             value={context.formValues[props.name]}
+                            onBlur={handleBlur}
                         />
                     )}
 
@@ -69,10 +85,26 @@ export const Field: React.FC<Props> = (props) => {
                             }
                             onChange={handleFieldChange}
                             value={context.formValues[props.name]}
+                            onBlur={handleBlur}
                         >
 
                         </textarea>
                     )}
+
+                    {formContext.errors[props.name] &&
+                    formContext.errors[props.name].length > 0 &&
+                    formContext.errors[props.name].map(error => (
+                    <div
+                        key={error}
+                        css={css`
+                        font-size: 12px;
+                        color: red;
+                        `}
+                    >
+                        {error}
+                    </div>
+                    ))}
+
                     </div>
                 )
             }}
