@@ -5,7 +5,13 @@ import {
     PostQuestionData
 } from "./QuestionData";
 
-import { Action, ActionCreator, Dispatch } from 'redux';
+import { 
+    Action,
+    ActionCreator,
+    Dispatch,
+    Reducer,
+    combineReducers
+} from 'redux';
 import { ThunkAction } from "redux-thunk";
 
 interface QuestionState {
@@ -98,3 +104,45 @@ ActionCreator<PostedQuestionAction> = () => {
 
     return postedQuestionAction;
 };
+
+const questionReducer: Reducer<QuestionState, QuestionsActions> = (
+    state = initialQuestionsState,
+    action
+) => {
+    switch (action.type) {
+        case 'GettingUnansweredQuestions': {
+            return {
+                ...state,
+                unanswered: null,
+                loading: true,
+            }
+        }
+        case 'GotUnasnweredQuestions': {
+            return {
+                ...state,
+                unanswered: action.questions,
+                loading: false,
+            }
+        }
+        case 'PostedQuestion': {
+            return {
+                ...state,
+                unanswered: action.result
+                    ? (state.unanswered || []).concat(action.result)
+                    : state.unanswered,
+                postedResult: action.result
+            }
+        }
+        default: {
+            neverReached(action)
+        }
+    }
+
+    return state;
+}
+
+const neverReached = (never: never) => {};
+
+const rootReducer = combineReducers<AppState>({
+   questions: questionReducer 
+});
