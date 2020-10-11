@@ -32,7 +32,7 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
         }
     }, [props.match.params.questionId]);
 
-    const handleSubmit = async (values: Values): Promise<SubmitResult> => {
+    const handleSubmit = async (values: Values): Promise <SubmitResult> => {
         const result = await postAnswer({
             questionId: question!.questionId,
             content: values.content,

@@ -1,21 +1,59 @@
-import React from 'react'
+import React, { FC, useState, useEffect } from 'react'
 import { Page } from './Page'
-import { Form, MinLength, Required, SubmitResult, Values } from './Form';
+
+import { 
+    Form, 
+    MinLength, 
+    Required, 
+    SubmitResult, 
+    Values 
+} from './Form';
+
 import { Field } from './Field';
-import { postQuestion } from './QuestionData';
+import { 
+    PostQuestionData,
+    QuestionData 
+} from './QuestionData';
 
-export const AskPage: React.FC = () => {
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
-    const handleSubmit = async (values: Values): Promise<SubmitResult> => {
-        const question = await postQuestion({
+import {
+    postQuestionActionCreator,
+    AppState,
+    clearPostedQuestionActionCreator
+} from './Store';
+
+import { AnyAction } from 'redux';
+
+interface Props {
+    postQuestion: (q: PostQuestionData) => Promise<void>;
+    postedQuestionResult?: QuestionData;
+    clearPostedQuestion: () => void;
+}
+
+export const AskPage: React.FC<Props> = (props) => {
+
+    useEffect(() => {
+        return function cleanUp() {
+            props.clearPostedQuestion();
+        };
+    }, [props.clearPostedQuestion]);
+
+    const handleSubmit = (values: Values) => {
+        props.postQuestion({
             title: values.title,
             content: values.content,
             userName: "Michael",
             created: new Date(),
         });
-
-        return { success: question ? true : false };
     };
+
+    let submitResult: SubmitResult | undefined;
+
+    if (props.postedQuestionResult) {
+        submitResult = { success: props.postedQuestionResult !== undefined };
+    }
 
     return (
         <Page title="Ask Page">
@@ -41,6 +79,7 @@ export const AskPage: React.FC = () => {
                     ],
                 }}
                 onSubmit={handleSubmit}
+                submitResult={submitResult}
                 failureMessage="There was a problem with your question"
                 successMessage="Your question was successfully submitted"
                 >
@@ -51,4 +90,24 @@ export const AskPage: React.FC = () => {
     )
 }
 
-export default AskPage;
+const mapStateToProps = (store: AppState) => {
+    return {
+        postedQuestionResult: store.questions.postedResult,
+    };
+};
+    
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<any, any, AnyAction>,
+    ) => {
+    return {
+        postQuestion: (question: PostQuestionData) =>
+        dispatch(postQuestionActionCreator(question)),
+        clearPostedQuestion: () =>
+        dispatch(clearPostedQuestionActionCreator()),
+    };
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(AskPage);
