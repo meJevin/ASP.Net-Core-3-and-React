@@ -4,27 +4,34 @@ import { PrimaryButton } from "./Styles";
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { QuestionList } from "./QuestionList";
-import { getUnansweredQuestions, QuestionData } from "./QuestionData";
+import { getUnansweredQuestions, QuestionData } from './QuestionData';
 import { Page } from "./Page";
 import { PageTitle } from "./PageTitle";
 import { Question } from "./Question";
 import { RouteComponentProps } from "react-router-dom";
 
-export const HomePage : React.FC<RouteComponentProps> = (props) => {
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+
+import {
+    getUnansweredQuestionsActionCreator,
+    AppState
+} from './Store';
+
+interface Props extends RouteComponentProps {
+    getUnansweredQuestions: () => Promise<void>;
+    questions: QuestionData[] | null;
+    questionsLoading: boolean;
+} 
+
+export const HomePage : React.FC<Props> = (props) => {
  
     useEffect(() => {
-        const fetchQuestions = async (): Promise<void> => {
-            const unansweredQuestions = await getUnansweredQuestions();
-
-            setQuestions(unansweredQuestions);
-            setQuestionsLoading(false);
-        };
-
-        fetchQuestions();
-    }, []);
-
-    const [questions, setQuestions] = useState<QuestionData[] | null>(null);
-    const [questionsLoading, setQuestionsLoading] = useState<boolean>(true);
+        if (props.questions === null) {
+            props.getUnansweredQuestions();
+        }
+    }, [props.questions, props.getUnansweredQuestions]);
 
     const handleAskQuestionClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         props.history.push("/ask");
@@ -43,7 +50,7 @@ export const HomePage : React.FC<RouteComponentProps> = (props) => {
                 Ask a question
             </PrimaryButton>
         </div>
-        {questionsLoading ? 
+        {props.questionsLoading ? 
         (<div css={css`
             font-size: 16px;
             font-style: italic;
@@ -52,12 +59,30 @@ export const HomePage : React.FC<RouteComponentProps> = (props) => {
         </div>)
         :
         (<QuestionList 
-            data={questions || []}
+            data={props.questions || []}
             />)
         }
         
     </Page>
 };
+
+const mapStateToProps = (store: AppState) => {
+    return {
+        questions: store.questions.unanswered,
+        questionsLoading: store.questions.loading
+    };
+};
+    
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<any, any, AnyAction>,
+    ) => {
+    return {
+        getUnansweredQuestions: () =>
+        dispatch(getUnansweredQuestionsActionCreator()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
 
 function renderQuestionInList(qData: QuestionData): JSX.Element {
     return (
