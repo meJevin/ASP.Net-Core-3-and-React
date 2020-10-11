@@ -1,5 +1,12 @@
-import { QuestionData, getUnansweredQuestions } from "./QuestionData";
+import { 
+    QuestionData, 
+    getUnansweredQuestions,
+    postQuestion,
+    PostQuestionData
+} from "./QuestionData";
+
 import { Action, ActionCreator, Dispatch } from 'redux';
+import { ThunkAction } from "redux-thunk";
 
 interface QuestionState {
     readonly loading: boolean;
@@ -36,12 +43,58 @@ type QuestionsActions =
     | GotUnasnweredQuestionsAction
     | PostedQuestionAction;
 
-export const getUnansweredQuestionsActionCreator = () => {
+export const getUnansweredQuestionsActionCreator:
+ActionCreator<ThunkAction<
+    Promise<void>,
+    QuestionData[],
+    null,
+    GotUnasnweredQuestionsAction
+    >
+> = () => {
     return async (dispatch: Dispatch) => {
-        const action: GettingUnansweredQuestionsAction = {
+        const gettingAction: GettingUnansweredQuestionsAction = {
             type: 'GettingUnansweredQuestions'
         };
 
-        dispatch(action);
+        dispatch(gettingAction);
+
+        const questions = await getUnansweredQuestions();
+
+        const gotAction: GotUnasnweredQuestionsAction = {
+            type: 'GotUnasnweredQuestions',
+            questions: questions,
+        }
+
+        dispatch(gotAction);
     };
 }
+
+export const postQuestionActionCreator:
+ActionCreator<ThunkAction<
+    Promise<void>,
+    QuestionData,
+    PostQuestionData,
+    PostedQuestionAction
+    >
+> = (question: PostQuestionData) => {
+    return async (dispatch: Dispatch) => {
+        const result = await postQuestion(question);
+
+        const postedQuestionAction: PostedQuestionAction = {
+            type: 'PostedQuestion',
+            result
+        };
+
+        dispatch(postedQuestionAction);
+    };
+}
+
+export const clearPostedQuestionActionCreator: 
+ActionCreator<PostedQuestionAction> = () => {
+    const postedQuestionAction: PostedQuestionAction = {
+        type: "PostedQuestion",
+        result: undefined,
+    };
+
+    return postedQuestionAction;
+};
