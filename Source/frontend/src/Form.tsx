@@ -32,7 +32,8 @@ interface ValidationProp {
 interface Props {
     submitCaption?: string;
     validationRules?: ValidationProp;
-    onSubmit: (values: Values) => Promise<SubmitResult>;
+    onSubmit: (values: Values) => Promise<SubmitResult> | void;
+    submitResult?: SubmitResult;
     successMessage?: string;
     failureMessage?: string;
 }
@@ -131,6 +132,10 @@ export const Form : React.FC<Props> = (props) => {
 
             const result = await props.onSubmit(values);
 
+            if (result === undefined) {
+                return;
+            }
+
             setErrors(result.errors || {});
             setSubmitError(!result.success);
 
@@ -138,6 +143,18 @@ export const Form : React.FC<Props> = (props) => {
             setSubmitted(true);
         }
     };
+
+    const disabled = props.submitResult
+    ? props.submitResult.success
+    : submitting || (submitted && !submitError);
+
+    const showError = props.submitResult
+    ? !props.submitResult.success
+    : submitted && submitError;
+
+    const showSuccess = props.submitResult
+    ? props.submitResult.success
+    : submitted && !submitError;
 
     return (
         <FormContext.Provider value={
@@ -154,7 +171,7 @@ export const Form : React.FC<Props> = (props) => {
             <form noValidate={true}
                 onSubmit={handleSubmit}>
                 <fieldset
-                    disabled={submitting || (submitted && !submitError)}
+                    disabled={disabled}
                     css={css`
                     margin: 10px auto 0 auto;
                     padding: 30px;
@@ -179,12 +196,12 @@ export const Form : React.FC<Props> = (props) => {
                         </PrimaryButton>
                     </div>
 
-                    {submitted && submitError && (
+                    {showError && (
                         <p css={css`color: red;`}>
                             {props.failureMessage}
                         </p>
                     )}
-                    {submitted && !submitError && (
+                    {showSuccess && (
                         <p css={css`color: green;`}>
                             {props.successMessage}
                         </p>
