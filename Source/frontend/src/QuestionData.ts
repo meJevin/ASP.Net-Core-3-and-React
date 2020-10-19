@@ -29,11 +29,12 @@ export interface AnswerDataFromServer {
     userName: string;
     created: string;
 }
+
 export const mapQuestionFromServer = (
     question: QuestionDataFromServer,
 ): QuestionData => ({
     ...question,
-    
+
     created: new Date(question.created.substr(0, 19)),
 
     answers: question.answers.map(answer => ({
