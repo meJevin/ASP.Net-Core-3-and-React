@@ -1,7 +1,15 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Page } from './Page'
-import { QuestionData, getQuestion, postAnswer } from './QuestionData';
+
+import { 
+    QuestionData, 
+    getQuestion, 
+    postAnswer, 
+    mapQuestionFromServer, 
+    QuestionDataFromServer 
+} from './QuestionData';
+
 import { useState, Fragment, useEffect } from 'react';
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -36,9 +44,9 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
             console.log(message);
         });
 
-        connection.on("ReceiveQuestion", (question: QuestionData) => {
+        connection.on("ReceiveQuestion", (question: QuestionDataFromServer) => {
             console.log("ReceiveQuestion", question);
-            setQuestion(question);
+            setQuestion(mapQuestionFromServer(question));
         });
         
         try {
