@@ -49,5 +49,15 @@ namespace WebAPI.Controllers
 
             return question;
         }
+
+        [HttpPost]
+        public ActionResult<QuestionGetSingleResponse> PostQuestion(QuestionPostRequest req)
+        {
+            var savedQuestion = _dataRepository.PostQuestion(req);
+
+            return CreatedAtAction(nameof(GetQuestion), 
+                new { questionId = savedQuestion.QuestionId },
+                savedQuestion);
+        }
     }
 }
