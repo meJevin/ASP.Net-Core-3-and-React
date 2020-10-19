@@ -116,7 +116,14 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
 
-            var savedAnswer = _dataRepository.PostAnswer(req);
+            var savedAnswer = _dataRepository.PostAnswer(new AnswerPostFullRequest() 
+            {
+                Content = req.Content,
+                QuestionId = req.QuestionId.Value,
+                Created = DateTime.UtcNow,
+                UserId = "1",
+                UserName = "bob.test@test.com",
+            });
             return savedAnswer;
         }
     }

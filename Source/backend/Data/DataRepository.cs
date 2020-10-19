@@ -99,7 +99,7 @@ namespace WebAPI.Data
             );
         }
 
-        public AnswerGetResponse PostAnswer(AnswerPostRequest answer)
+        public AnswerGetResponse PostAnswer(AnswerPostFullRequest answer)
         {
             using var connection = new SqlConnection(_connectionString);
             
