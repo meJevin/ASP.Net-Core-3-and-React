@@ -57,7 +57,7 @@ namespace WebAPI.Data
             if (question != null)
             {
                 question.Answers = connection.Query<AnswerGetResponse>(
-                    @"EXEC dbo.Question_Get_ByQuestionId @QuestionId = @QuestionId",
+                    @"EXEC dbo.Answer_Get_ByQuestionId @QuestionId = @QuestionId",
                     new { QuestionId = questionId }
                 );
             }
