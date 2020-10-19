@@ -133,7 +133,7 @@ namespace WebAPI.Controllers
             });
 
             await _questionHubContext.Clients.Group($"Question-{req.QuestionId.Value}")
-                .SendAsync("RecieveQuestion", _dataRepository.GetQuestion(req.QuestionId.Value));
+                .SendAsync("ReceiveQuestion", _dataRepository.GetQuestion(req.QuestionId.Value));
 
             return savedAnswer;
         }
