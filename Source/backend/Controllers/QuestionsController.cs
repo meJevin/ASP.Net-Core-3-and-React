@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using WebAPI.Data;
 using WebAPI.Data.Models;
+using WebAPI.Hubs;
 
 namespace WebAPI.Controllers
 {
@@ -14,10 +16,14 @@ namespace WebAPI.Controllers
     public class QuestionsController : ControllerBase
     {
         readonly IDataRepository _dataRepository;
+        readonly IHubContext<QuestionsHub> _questionHubContext;
 
-        public QuestionsController(IDataRepository dataRepository)
+        public QuestionsController(
+            IDataRepository dataRepository,
+            IHubContext<QuestionsHub> questionHubContext)
         {
             _dataRepository = dataRepository;
+            _questionHubContext = questionHubContext;
         }
 
         [HttpGet]
@@ -68,7 +74,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public ActionResult<QuestionGetSingleResponse> PutQuestion(int questionId, QuestionPutRequest req)
+        public ActionResult<QuestionGetSingleResponse> PutQuestion(
+            int questionId, QuestionPutRequest req)
         {
             var question = _dataRepository.GetQuestion(questionId);
 
@@ -107,7 +114,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("answer")]
-        public ActionResult<AnswerGetResponse> PostAnswer(AnswerPostRequest req)
+        public async Task<ActionResult<AnswerGetResponse>> PostAnswer(AnswerPostRequest req)
         {
             var questionExists = _dataRepository.QuestionExists(req.QuestionId.Value);
 
@@ -124,6 +131,10 @@ namespace WebAPI.Controllers
                 UserId = "1",
                 UserName = "bob.test@test.com",
             });
+
+            await _questionHubContext.Clients.Group($"Question-{req.QuestionId.Value}")
+                .SendAsync("RecieveQuestion", _dataRepository.GetQuestion(req.QuestionId.Value));
+
             return savedAnswer;
         }
     }
