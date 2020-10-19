@@ -53,7 +53,14 @@ namespace WebAPI.Controllers
         [HttpPost]
         public ActionResult<QuestionGetSingleResponse> PostQuestion(QuestionPostRequest req)
         {
-            var savedQuestion = _dataRepository.PostQuestion(req);
+            var savedQuestion = _dataRepository.PostQuestion(new QuestionPostFullRequest() 
+            {
+                Content = req.Content,
+                Title = req.Title,
+                Created = DateTime.UtcNow,
+                UserId = "1",
+                UserName = "bob.test@test.com",
+            });
 
             return CreatedAtAction(nameof(GetQuestion), 
                 new { questionId = savedQuestion.QuestionId },
