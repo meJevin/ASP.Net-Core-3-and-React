@@ -59,5 +59,30 @@ namespace WebAPI.Controllers
                 new { questionId = savedQuestion.QuestionId },
                 savedQuestion);
         }
+
+        [HttpPut]
+        public ActionResult<QuestionGetSingleResponse> PutQuestion(int questionId, QuestionPutRequest req)
+        {
+            var question = _dataRepository.GetQuestion(questionId);
+
+            if (question == null)
+            {
+                return NotFound();
+            }
+
+            req.Title =
+                string.IsNullOrEmpty(req.Title) ?
+                question.Title :
+                req.Title;
+
+            req.Content =
+                string.IsNullOrEmpty(req.Content) ?
+                question.Content :
+                req.Content;
+
+            var putQuestion = _dataRepository.PutQuestion(questionId, req);
+
+            return putQuestion;
+        }
     }
 }
