@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Data;
+using WebAPI.Data.Models;
 
 namespace WebAPI.Controllers
 {
@@ -11,5 +13,19 @@ namespace WebAPI.Controllers
     [ApiController]
     public class QuestionsController : ControllerBase
     {
+        readonly IDataRepository _dataRepository;
+
+        public QuestionsController(IDataRepository dataRepository)
+        {
+            _dataRepository = dataRepository;
+        }
+
+        [HttpGet]
+        public IEnumerable<QuestionGetManyResponse> GetQuestions()
+        {
+            var questions = _dataRepository.GetQuestions();
+
+            return questions;
+        }
     }
 }
