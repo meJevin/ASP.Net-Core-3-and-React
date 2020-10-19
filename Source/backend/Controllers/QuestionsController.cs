@@ -30,5 +30,11 @@ namespace WebAPI.Controllers
 
             return _dataRepository.GetQuestionsBySearch(search);
         }
+
+        [HttpGet("unanswered")]
+        public IEnumerable<QuestionGetManyResponse> GetUnansweredQuestions()
+        {
+            return _dataRepository.GetUnansweredQuestions();
+        }
     }
 }
