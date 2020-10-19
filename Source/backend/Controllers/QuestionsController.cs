@@ -73,7 +73,7 @@ namespace WebAPI.Controllers
             var question = _dataRepository.GetQuestion(questionId);
 
             if (question == null)
-            {
+            { 
                 return NotFound();
             }
 
