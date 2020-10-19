@@ -98,5 +98,19 @@ namespace WebAPI.Controllers
             _dataRepository.DeleteQuestion(questionId);
             return NoContent();
         }
+
+        [HttpPost("answer")]
+        public ActionResult<AnswerGetResponse> PostAnswer(AnswerPostRequest req)
+        {
+            var questionExists = _dataRepository.QuestionExists(req.QuestionId);
+
+            if (!questionExists)
+            {
+                return NotFound();
+            }
+
+            var savedAnswer = _dataRepository.PostAnswer(req);
+            return savedAnswer;
+        }
     }
 }
