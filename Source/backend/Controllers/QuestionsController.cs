@@ -85,7 +85,7 @@ namespace WebAPI.Controllers
             return putQuestion;
         }
 
-        [HttpDelete("{questionId}"]
+        [HttpDelete("{questionId}")]
         public ActionResult DeleteQuestion(int questionId)
         {
             var question = _dataRepository.GetQuestion(questionId);
