@@ -102,7 +102,7 @@ namespace WebAPI.Controllers
         [HttpPost("answer")]
         public ActionResult<AnswerGetResponse> PostAnswer(AnswerPostRequest req)
         {
-            var questionExists = _dataRepository.QuestionExists(req.QuestionId);
+            var questionExists = _dataRepository.QuestionExists(req.QuestionId.Value);
 
             if (!questionExists)
             {
