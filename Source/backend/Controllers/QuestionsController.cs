@@ -21,11 +21,14 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<QuestionGetManyResponse> GetQuestions()
+        public IEnumerable<QuestionGetManyResponse> GetQuestions(string search)
         {
-            var questions = _dataRepository.GetQuestions();
+            if (string.IsNullOrEmpty(search))
+            {
+                return _dataRepository.GetQuestions();
+            }
 
-            return questions;
+            return _dataRepository.GetQuestionsBySearch(search);
         }
     }
 }
