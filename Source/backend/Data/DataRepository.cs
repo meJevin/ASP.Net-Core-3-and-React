@@ -76,6 +76,25 @@ namespace WebAPI.Data
             );
         }
 
+        public IEnumerable<QuestionGetManyResponse> GetQuestionsWithAnswers()
+        {
+            using var connection = new SqlConnection(_connectionString);
+
+            connection.Open();
+
+            var questions = connection.Query<QuestionGetManyResponse>(
+                "EXEC dbo.Questions_GetMany");
+
+            foreach (var q in questions)
+            {
+                q.Answers = connection.Query<AnswerGetResponse>(
+                    "EXEC dbo.Answers_Get_ByQuestionId @QuestionId = @QuestionId",
+                    new { QuestionId = q.QuestionId }).ToList();
+            }
+
+            return questions;
+        }
+
         public IEnumerable<QuestionGetManyResponse> GetQuestionsBySearch(string search)
         {
             using var connection = new SqlConnection(_connectionString);
