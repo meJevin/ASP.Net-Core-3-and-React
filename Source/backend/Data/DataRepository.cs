@@ -83,12 +83,12 @@ namespace WebAPI.Data
             connection.Open();
 
             var questions = connection.Query<QuestionGetManyResponse>(
-                "EXEC dbo.Questions_GetMany");
+                "EXEC dbo.Question_GetMany");
 
             foreach (var q in questions)
             {
                 q.Answers = connection.Query<AnswerGetResponse>(
-                    "EXEC dbo.Answers_Get_ByQuestionId @QuestionId = @QuestionId",
+                    "EXEC dbo.Answer_Get_ByQuestionId @QuestionId = @QuestionId",
                     new { QuestionId = q.QuestionId }).ToList();
             }
 
