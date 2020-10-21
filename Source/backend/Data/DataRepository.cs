@@ -82,17 +82,28 @@ namespace WebAPI.Data
 
             connection.Open();
 
-            var questions = connection.Query<QuestionGetManyResponse>(
-                "EXEC dbo.Question_GetMany");
+            var questionDictionary = new Dictionary<int, QuestionGetManyResponse>();
 
-            foreach (var q in questions)
-            {
-                q.Answers = connection.Query<AnswerGetResponse>(
-                    "EXEC dbo.Answer_Get_ByQuestionId @QuestionId = @QuestionId",
-                    new { QuestionId = q.QuestionId }).ToList();
-            }
-
-            return questions;
+            return connection.Query<
+                QuestionGetManyResponse,
+                AnswerGetResponse,
+                QuestionGetManyResponse>(
+                    "EXEC dbo.Question_GetMany_WithAnswers",
+                    map: (q, a) =>
+                    {
+                        QuestionGetManyResponse question;
+                        if (!questionDictionary.TryGetValue(q.QuestionId, out question))
+                        {
+                            question = q;
+                            question.Answers = new List<AnswerGetResponse>();
+                            questionDictionary.Add(question.QuestionId, question);
+                        }
+                        question.Answers.Add(a);
+                        return question;
+                    },
+                    splitOn: "QuestionId")
+                .Distinct()
+                .ToList();
         }
 
         public IEnumerable<QuestionGetManyResponse> GetQuestionsBySearch(string search)
