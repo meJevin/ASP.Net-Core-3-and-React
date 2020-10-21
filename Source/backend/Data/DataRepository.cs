@@ -69,7 +69,6 @@ namespace WebAPI.Data
 
                 return question;
             }
-
         }
 
         public IEnumerable<QuestionGetManyResponse> GetQuestions()
