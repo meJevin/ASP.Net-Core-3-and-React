@@ -17,13 +17,16 @@ namespace WebAPI.Controllers
     {
         readonly IDataRepository _dataRepository;
         readonly IHubContext<QuestionsHub> _questionHubContext;
+        readonly IQuestionCache _cache;
 
         public QuestionsController(
             IDataRepository dataRepository,
-            IHubContext<QuestionsHub> questionHubContext)
+            IHubContext<QuestionsHub> questionHubContext,
+            IQuestionCache cache)
         {
             _dataRepository = dataRepository;
             _questionHubContext = questionHubContext;
+            _cache = cache;
         }
 
         [HttpGet]
@@ -52,13 +55,21 @@ namespace WebAPI.Controllers
         [HttpGet("{questionId}")]
         public ActionResult<QuestionGetSingleResponse> GetQuestion(int questionId)
         {
-            var question = _dataRepository.GetQuestion(questionId);
+            var question = _cache.Get(questionId);
+
+            if (question != null)
+            {
+                return question;
+            }
+
+            question = _dataRepository.GetQuestion(questionId);
 
             if (question == null)
             {
                 return NotFound();
             }
-
+            
+            _cache.Set(question);
             return question;
         }
 
@@ -102,6 +113,8 @@ namespace WebAPI.Controllers
 
             var putQuestion = _dataRepository.PutQuestion(questionId, req);
 
+            _cache.Remove(questionId);
+
             return putQuestion;
         }
 
@@ -116,6 +129,9 @@ namespace WebAPI.Controllers
             }
 
             _dataRepository.DeleteQuestion(questionId);
+
+            _cache.Remove(questionId);
+
             return NoContent();
         }
 
@@ -137,6 +153,8 @@ namespace WebAPI.Controllers
                 UserId = "1",
                 UserName = "bob.test@test.com",
             });
+
+            _cache.Remove(req.QuestionId.Value);
 
             await _questionHubContext.Clients.Group($"Question-{req.QuestionId.Value}")
                 .SendAsync("ReceiveQuestion", _dataRepository.GetQuestion(req.QuestionId.Value));
