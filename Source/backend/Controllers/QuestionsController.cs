@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 using WebAPI.Authorization.Constants;
 using WebAPI.Data;
 using WebAPI.Data.Models;
@@ -22,14 +26,22 @@ namespace WebAPI.Controllers
         readonly IHubContext<QuestionsHub> _questionHubContext;
         readonly IQuestionCache _cache;
 
+        readonly IHttpClientFactory _httpClientFactory;
+        readonly string _auth0UserInfo;
+
         public QuestionsController(
             IDataRepository dataRepository,
             IHubContext<QuestionsHub> questionHubContext,
-            IQuestionCache cache)
+            IQuestionCache cache,
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration)
         {
             _dataRepository = dataRepository;
             _questionHubContext = questionHubContext;
             _cache = cache;
+            _httpClientFactory = httpClientFactory;
+
+            _auth0UserInfo = $"{configuration["Auth0:Authority"]}userinfo";
         }
 
         [AllowAnonymous]
@@ -85,8 +97,8 @@ namespace WebAPI.Controllers
                 Content = req.Content,
                 Title = req.Title,
                 Created = DateTime.UtcNow,
-                UserId = "1",
-                UserName = "bob.test@test.com",
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value,
+                UserName = await GetUserName(),
             });
 
             return CreatedAtAction(nameof(GetQuestion), 
@@ -156,8 +168,8 @@ namespace WebAPI.Controllers
                 Content = req.Content,
                 QuestionId = req.QuestionId.Value,
                 Created = DateTime.UtcNow,
-                UserId = "1",
-                UserName = "bob.test@test.com",
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value,
+                UserName = await GetUserName(),
             });
 
             _cache.Remove(req.QuestionId.Value);
@@ -167,5 +179,34 @@ namespace WebAPI.Controllers
 
             return savedAnswer;
         }
+
+        private async Task<string> GetUserName()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, _auth0UserInfo);
+
+            request.Headers.Add("Authorization", Request.Headers["Authorization"].First());
+
+            var client = _httpClientFactory.CreateClient();
+            
+            var response = await client.SendAsync(request);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+
+                var user = JsonSerializer.Deserialize<User>(jsonContent,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                return user.Name;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
     }
 }
