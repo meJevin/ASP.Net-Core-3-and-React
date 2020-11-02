@@ -57,10 +57,13 @@ namespace WebAPI
                     builder
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .WithOrigins("http://localhost:3000")
+                        .WithOrigins("http://localhost:1337")
                         .AllowCredentials();
                 });
             });
+
+            services.AddMemoryCache();
+            services.AddSingleton<IQuestionCache, QuestionCache>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
