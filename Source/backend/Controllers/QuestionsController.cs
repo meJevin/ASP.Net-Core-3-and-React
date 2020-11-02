@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using WebAPI.Authorization.Constants;
 using WebAPI.Data;
 using WebAPI.Data.Models;
 using WebAPI.Hubs;
@@ -56,7 +57,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("{questionId}")]
-        public ActionResult<QuestionGetSingleResponse> GetQuestion(int questionId)
+        public async Task<ActionResult<QuestionGetSingleResponse>> GetQuestion(int questionId)
         {
             var question = _cache.Get(questionId);
 
@@ -65,7 +66,7 @@ namespace WebAPI.Controllers
                 return question;
             }
 
-            question = _dataRepository.GetQuestion(questionId);
+            question = await _dataRepository.GetQuestion(questionId);
 
             if (question == null)
             {
@@ -77,9 +78,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<QuestionGetSingleResponse> PostQuestion(QuestionPostRequest req)
+        public async Task<ActionResult<QuestionGetSingleResponse>> PostQuestion(QuestionPostRequest req)
         {
-            var savedQuestion = _dataRepository.PostQuestion(new QuestionPostFullRequest() 
+            var savedQuestion = await _dataRepository.PostQuestion(new QuestionPostFullRequest() 
             {
                 Content = req.Content,
                 Title = req.Title,
@@ -94,10 +95,11 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public ActionResult<QuestionGetSingleResponse> PutQuestion(
+        [Authorize(PolicyNames.MustBeQuestionAuthor)]
+        public async Task<ActionResult<QuestionGetSingleResponse>> PutQuestion(
             int questionId, QuestionPutRequest req)
         {
-            var question = _dataRepository.GetQuestion(questionId);
+            var question = await _dataRepository.GetQuestion(questionId);
 
             if (question == null)
             { 
@@ -114,7 +116,7 @@ namespace WebAPI.Controllers
                 question.Content :
                 req.Content;
 
-            var putQuestion = _dataRepository.PutQuestion(questionId, req);
+            var putQuestion = await _dataRepository.PutQuestion(questionId, req);
 
             _cache.Remove(questionId);
 
@@ -122,6 +124,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("{questionId}")]
+        [Authorize(PolicyNames.MustBeQuestionAuthor)]
         public ActionResult DeleteQuestion(int questionId)
         {
             var question = _dataRepository.GetQuestion(questionId);
