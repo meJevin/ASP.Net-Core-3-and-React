@@ -44,11 +44,11 @@ namespace WebAPI.Data
             );
         }
 
-        public QuestionGetSingleResponse GetQuestion(int questionId)
+        public async Task<QuestionGetSingleResponse> GetQuestion(int questionId)
         {
             using var connection = new SqlConnection(_connectionString);
 
-            connection.Open();
+            await connection.OpenAsync();
 
             using (GridReader results = connection.QueryMultiple(
                     @"EXEC dbo.Question_GetSingle
@@ -59,7 +59,7 @@ namespace WebAPI.Data
                 )
             {
                 var question =
-                results.Read<QuestionGetSingleResponse>().FirstOrDefault();
+                (await results.ReadAsync<QuestionGetSingleResponse>()).FirstOrDefault();
 
                 if (question != null)
                 {
@@ -150,7 +150,7 @@ namespace WebAPI.Data
             );
         }
 
-        public QuestionGetSingleResponse PostQuestion(QuestionPostFullRequest question)
+        public async Task<QuestionGetSingleResponse> PostQuestion(QuestionPostFullRequest question)
         {
             using var connection = new SqlConnection(_connectionString);
             
@@ -164,10 +164,10 @@ namespace WebAPI.Data
                 question
             );
 
-            return GetQuestion(questionId);
+            return await GetQuestion(questionId);
         }
 
-        public QuestionGetSingleResponse PutQuestion(int questionId, QuestionPutRequest question)
+        public async Task<QuestionGetSingleResponse> PutQuestion(int questionId, QuestionPutRequest question)
         {
             using var connection = new SqlConnection(_connectionString);
 
@@ -179,7 +179,7 @@ namespace WebAPI.Data
                 new { QuestionId = questionId, question.Title, question.Content }
             );
 
-            return GetQuestion(questionId);
+            return await GetQuestion(questionId);
         }
 
         public bool QuestionExists(int questionId)
