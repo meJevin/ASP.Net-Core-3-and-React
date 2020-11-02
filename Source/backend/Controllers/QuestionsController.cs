@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -13,6 +14,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class QuestionsController : ControllerBase
     {
         readonly IDataRepository _dataRepository;
@@ -29,6 +31,7 @@ namespace WebAPI.Controllers
             _cache = cache;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<QuestionGetManyResponse> GetQuestions(string search, 
             bool includeAnswers, int page = 1, int pageSize = 20)
