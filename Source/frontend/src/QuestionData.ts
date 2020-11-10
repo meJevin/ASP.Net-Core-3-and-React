@@ -156,30 +156,37 @@ export const getQuestion = async (
     questionId: number
 ): Promise<QuestionData | null> => 
 {
-    await wait(500);
+    try {
+        const result = await http<undefined, QuestionDataFromServer>({
+            path: `questions/${questionId}`,
+        });
 
-    const foundQuestion = questions.find(q => q.questionId === questionId);
-
-    if (foundQuestion) 
-    {
-        return foundQuestion;
-    }
-    else 
-    {
+        if (result.ok && result.parsedBody) {
+            return mapQuestionFromServer(result.parsedBody);
+        } else {
+            return null;
+        }
+    } catch (ex) {
+        console.error(ex);
         return null;
     }
 };
 
 export const searchQuestions = async (criteria: string)
 : Promise<QuestionData[]> => {
-    await wait(500);
+    try {
+        const result = await http<undefined, QuestionDataFromServer[]>({
+            path: `questions/search=${criteria}`,
+        });
 
-    return questions.filter(
-        q =>
-        q.title.toLowerCase().indexOf(criteria.toLowerCase()) >=
-        0 ||
-        q.content.toLowerCase().indexOf(criteria.toLowerCase()) >=
-        0,
-    );
+        if (result.ok && result.parsedBody) {
+            return result.parsedBody.map(mapQuestionFromServer);
+        } else {
+            return [];
+        }
+    } catch (ex) {
+        console.error(ex);
+        return [];
+    }
 };
     
