@@ -39,7 +39,7 @@ export const mapQuestionFromServer = (
 
     created: new Date(question.created.substr(0, 19)),
 
-    answers: question.answers.map(answer => ({
+    answers: question.answers?.map(answer => ({
         ...answer,
         created: new Date(answer.created.substr(0, 19)),
     })),
@@ -137,7 +137,7 @@ const wait = (ms: number): Promise<void> => {
 export const getUnansweredQuestions = async (): Promise<QuestionData[]> => {
     try {
         const result = await http<undefined, QuestionDataFromServer[]>({
-                path: "questions/unanswered",
+            path: "questions/unanswered",
         });
 
         if (result.parsedBody) {
