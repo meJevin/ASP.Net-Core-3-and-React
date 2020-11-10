@@ -133,8 +133,23 @@ const wait = (ms: number): Promise<void> => {
 }
 
 export const getUnansweredQuestions = async (): Promise<QuestionData[]> => {
-    await wait(500);
-    return questions.filter(q => q.answers.length === 0);
+    let unansweredQuestions: QuestionData[] = [];
+
+    await fetch("https://localhost:44316/api/questions/unanswered")
+    .then(res => res.json())
+    .then(body => {
+        unansweredQuestions = body;
+    })
+    .catch(err => {
+        console.error(err);
+    })
+
+    return unansweredQuestions.map(q => {
+        return {
+            ...q,
+            created: new Date(q.created)
+        }
+    });
 };
 
 export const getQuestion = async (
