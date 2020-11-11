@@ -69,6 +69,7 @@ namespace WebAPI.Controllers
             return await _dataRepository.GetUnansweredQuestionsAsync();
         }
 
+        [AllowAnonymous]
         [HttpGet("{questionId}")]
         public async Task<ActionResult<QuestionGetSingleResponse>> GetQuestion(int questionId)
         {
