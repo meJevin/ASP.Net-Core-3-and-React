@@ -8,11 +8,14 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { SearchPage } from './SearchPage';
 import { SignInPage } from './SignInPage';
+import { SignOutPage } from './SignOutPage';
 import { QuestionPage } from './QuestionPage';
 import { NotFoundPage } from './NotFoundPage';
 
 import { Provider } from 'react-redux';
 import { configureStore } from './Store';
+
+import {AuthProvider} from './Auth';
 
 const AskPage = lazy(() => import("./AskPage"));
 
@@ -21,46 +24,66 @@ const store = configureStore();
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <div className="App" 
-        css={css`
-          font-family: ${fontFamily};
-          font-size: ${fontSize};
-          color: ${gray2};
-        `}>
+      <AuthProvider>
+        <BrowserRouter>
+          <div className="App" 
+          css={css`
+            font-family: ${fontFamily};
+            font-size: ${fontSize};
+            color: ${gray2};
+          `}>
 
-          <Header/>
+            <Header/>
 
-          <Switch>
-            <Redirect from="/home" to="/"/>
+            <Switch>
+              <Redirect from="/home" to="/"/>
 
-            <Route exact path="/" component={HomePage}/>
+              <Route exact path="/" component={HomePage}/>
 
-            <Route path="/search" component={SearchPage}/>
-            
-            <Route path="/ask">
-              <Suspense fallback={
-                <div
-                css={css`
-                margin-top: 100px;
-                text-align: center;
-                `}
-                >
-                  Loading...
-                </div>
-              }>
-                <AskPage/>
-              </Suspense>
-            </Route>
-            
-            <Route path="/signin" component={SignInPage}/>
+              <Route path="/search" component={SearchPage}/>
+              
+              <Route path="/ask">
+                <Suspense fallback={
+                  <div
+                  css={css`
+                  margin-top: 100px;
+                  text-align: center;
+                  `}
+                  >
+                    Loading...
+                  </div>
+                }>
+                  <AskPage/>
+                </Suspense>
+              </Route>
+              
+              <Route 
+                path="/signin" 
+                render={() => <SignInPage action="signin"/>}
+              />
 
-            <Route path="/question/:questionId" component={QuestionPage}/>
+              <Route 
+                path="/signin-callback" 
+                render={() => <SignInPage action="signin-callback"/>}
+              />
 
-            <Route component={NotFoundPage}/>
-          </Switch>
-        </div>
-      </BrowserRouter>
+              <Route 
+                path="/signout" 
+                render={() => <SignOutPage action="signout"/>}
+              />
+
+              <Route 
+                path="/signout-callback" 
+                render={() => <SignOutPage action="signout-callback"/>}
+              />
+
+              <Route path="/question/:questionId" component={QuestionPage}/>
+
+              <Route component={NotFoundPage}/>
+            </Switch>
+          </div>
+        </BrowserRouter>  
+      </AuthProvider>
     </Provider>
   );
 }
