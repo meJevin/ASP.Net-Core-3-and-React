@@ -14,6 +14,8 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 
+import { useAuth } from "./Auth";
+
 import {
     getUnansweredQuestionsActionCreator,
     AppState
@@ -33,11 +35,13 @@ export const HomePage : React.FC<Props> = (props) => {
         }
     }, [props.questions, props.getUnansweredQuestions]);
 
+    const { isAuthenticated } = useAuth();
+
     const handleAskQuestionClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         props.history.push("/ask");
     };
 
-    return <Page title="niggers?">
+    return <Page title="Home page">
         <div
             css={css`
             display: flex;
@@ -46,9 +50,12 @@ export const HomePage : React.FC<Props> = (props) => {
             `}
             >
             <PageTitle>Unanswered questions</PageTitle>
-            <PrimaryButton onClick={handleAskQuestionClick}>
+            
+            {isAuthenticated && (
+                <PrimaryButton onClick={handleAskQuestionClick}>
                 Ask a question
-            </PrimaryButton>
+                </PrimaryButton>
+            )}
         </div>
         {props.questionsLoading ? 
         (<div css={css`
