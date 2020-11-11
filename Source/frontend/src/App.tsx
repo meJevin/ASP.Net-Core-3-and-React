@@ -11,6 +11,7 @@ import { SignInPage } from './SignInPage';
 import { SignOutPage } from './SignOutPage';
 import { QuestionPage } from './QuestionPage';
 import { NotFoundPage } from './NotFoundPage';
+import { AuthorizedPage } from './AuthorizedPage';
 
 import { Provider } from 'react-redux';
 import { configureStore } from './Store';
@@ -53,7 +54,9 @@ const App: React.FC = () => {
                     Loading...
                   </div>
                 }>
-                  <AskPage/>
+                  <AuthorizedPage>
+                    <AskPage/>
+                  </AuthorizedPage>
                 </Suspense>
               </Route>
               
