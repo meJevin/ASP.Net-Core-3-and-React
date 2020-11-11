@@ -19,6 +19,8 @@ import { AnswerList } from './AnswerList';
 import { Form, MinLength, Required, SubmitResult, Values } from './Form';
 import { Field } from './Field';
 
+import { useAuth } from './Auth';
+
 import {
     HubConnectionBuilder,
     HubConnectionState,
@@ -33,6 +35,8 @@ export const QuestionPage:
 React.FC<RouteComponentProps<RouteParams>> = (props) => {
 
     const [question, setQuestion] = useState<QuestionData | null>(null);
+
+    const { isAuthenticated } = useAuth();
 
     const setUpSignalRConnection = async (questionId: number) => {
         const connection = new HubConnectionBuilder()
@@ -167,7 +171,8 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
                         </div>
 
                         <AnswerList data={question.answers}/>
-
+                        
+                        {isAuthenticated && (
                         <div
                             css={css`
                             margin-top: 20px;
@@ -187,6 +192,7 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
                                 <Field name="content" label="Your Answer" type="TextArea" />
                             </Form>
                         </div>
+                        )}
                     </Fragment>
                 )}
             </div>
