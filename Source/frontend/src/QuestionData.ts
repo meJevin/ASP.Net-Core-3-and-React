@@ -90,7 +90,28 @@ export interface PostAnswerData {
 export const postAnswer = async (
     answer: PostAnswerData,
 ): Promise<AnswerData | undefined> => {
-    return undefined;
+    const accessToken = await getAccessToken();
+
+    try {
+        const result = await http<
+            PostAnswerData,
+            AnswerData
+        >({
+            path: "questions/answer",
+            method: "post",
+            body: answer,
+            accessToken,
+        });
+
+        if (result.ok && result.parsedBody) {
+            return result.parsedBody;
+        } else {
+            return undefined;
+        }
+    } catch (ex) {
+        console.error(ex);
+        return undefined;
+    }
 }
 
 const wait = (ms: number): Promise<void> => {
