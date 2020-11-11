@@ -1,3 +1,6 @@
+import { getAccessToken } from './Auth';
+import { http } from './http';
+
 export interface QuestionData {
     questionId: number;
     title: string;
@@ -37,7 +40,7 @@ export const mapQuestionFromServer = (
 
     created: new Date(question.created.substr(0, 19)),
 
-    answers: question.answers.map(answer => ({
+    answers: question.answers?.map(answer => ({
         ...answer,
         created: new Date(answer.created.substr(0, 19)),
     })),
@@ -53,18 +56,28 @@ export interface PostQuestionData {
 export const postQuestion = async (
     question: PostQuestionData,
 ): Promise<QuestionData | undefined> => {
-    await wait(500);
+    const accessToken = await getAccessToken();
 
-    const questionId = Math.max(...questions.map(q => q.questionId)) + 1;
+    try {
+        const result = await http<
+            PostQuestionData,
+            QuestionDataFromServer
+        >({
+            path: "questions",
+            method: "post",
+            body: question,
+            accessToken,
+        });
 
-    const newQuestion: QuestionData = {
-        ...question,
-        questionId,
-        answers: [],
-    };
-
-    questions.push(newQuestion);
-    return newQuestion;
+        if (result.ok && result.parsedBody) {
+            return mapQuestionFromServer(result.parsedBody);
+        } else {
+            return undefined;
+        }
+    } catch (ex) {
+        console.error(ex);
+        return undefined;
+    }
 }
 
 export interface PostAnswerData {
@@ -77,94 +90,87 @@ export interface PostAnswerData {
 export const postAnswer = async (
     answer: PostAnswerData,
 ): Promise<AnswerData | undefined> => {
-    await wait(500);
+    const accessToken = await getAccessToken();
 
-    const question = questions.filter(
-        q => q.questionId === answer.questionId,
-    )[0];
+    try {
+        const result = await http<
+            PostAnswerData,
+            AnswerData
+        >({
+            path: "questions/answer",
+            method: "post",
+            body: answer,
+            accessToken,
+        });
 
-    const answerInQuestion: AnswerData = {
-        answerId: 99,
-        ...answer,
-    };
-
-    question.answers.push(answerInQuestion);
-
-    return answerInQuestion;
+        if (result.ok && result.parsedBody) {
+            return result.parsedBody;
+        } else {
+            return undefined;
+        }
+    } catch (ex) {
+        console.error(ex);
+        return undefined;
+    }
 }
-
-const questions: QuestionData[] = [
-    {
-    questionId: 1,
-    title: 'Why should I learn TypeScript?',
-    content:
-    'TypeScript seems to be getting popular so I wondered whether it is worth my time learning it? What benefits does it give over JavaScript?',
-    userName: 'Bob',
-    created: new Date(),
-    answers: [
-    {
-    answerId: 1,
-    content: 'To catch problems earlier speeding up your developments',
-    userName: 'Jane',
-    created: new Date(),
-    },
-    {
-    answerId: 2,
-    content:
-    'So, that you can use the JavaScript features of tomorrow, today',
-    userName: 'Fred',
-    created: new Date(),
-    },
-    ],
-    },
-    {
-    questionId: 2,
-    title: 'Which state management tool should I use?',
-    content:
-    'There seem to be a fair few state management tools around for React - React, Unstated, ... Which one should I use?',
-    userName: 'Bob',
-    created: new Date(),
-    answers: [],
-    },
-];
 
 const wait = (ms: number): Promise<void> => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export const getUnansweredQuestions = async (): Promise<QuestionData[]> => {
-    await wait(500);
-    return questions.filter(q => q.answers.length === 0);
+    try {
+        const result = await http<undefined, QuestionDataFromServer[]>({
+            path: "questions/unanswered",
+        });
+
+        if (result.parsedBody) {
+            return result.parsedBody.map(mapQuestionFromServer)
+        }
+        else {
+            return [];
+        }
+    } catch (ex) {
+        console.error(ex);
+        return [];
+    }
 };
 
 export const getQuestion = async (
     questionId: number
 ): Promise<QuestionData | null> => 
 {
-    await wait(500);
+    try {
+        const result = await http<undefined, QuestionDataFromServer>({
+            path: `questions/${questionId}`,
+        });
 
-    const foundQuestion = questions.find(q => q.questionId === questionId);
-
-    if (foundQuestion) 
-    {
-        return foundQuestion;
-    }
-    else 
-    {
+        if (result.ok && result.parsedBody) {
+            return mapQuestionFromServer(result.parsedBody);
+        } else {
+            return null;
+        }
+    } catch (ex) {
+        console.error(ex);
         return null;
     }
 };
 
 export const searchQuestions = async (criteria: string)
 : Promise<QuestionData[]> => {
-    await wait(500);
+    try {
+        const result = await http<undefined, QuestionDataFromServer[]>({
+            path: `questions/search=${criteria}`,
+        });
 
-    return questions.filter(
-        q =>
-        q.title.toLowerCase().indexOf(criteria.toLowerCase()) >=
-        0 ||
-        q.content.toLowerCase().indexOf(criteria.toLowerCase()) >=
-        0,
-    );
+        if (result.ok && result.parsedBody) {
+            return result.parsedBody.map(mapQuestionFromServer);
+        } else {
+            return [];
+        }
+    } catch (ex) {
+        console.error(ex);
+        return [];
+    }
 };
     
