@@ -49,5 +49,40 @@ namespace WebAPI.Tests
             Assert.Equal(mockQuestions.Count, result.Count());
             mockDataRepo.Verify(mock => mock.GetQuestions(), Times.Once());
         }
+
+        [Fact]
+        public async void GetQuestions_WhenHaveSearchParameter_ReturnsCorrectQuestions()
+        {
+            var mockQuestions = new List<QuestionGetManyResponse>();
+
+            mockQuestions.Add(new QuestionGetManyResponse
+            {
+                QuestionId = 1,
+                Title = "Test",
+                Content = "Test content",
+                UserName = "User1",
+                Answers = new List<AnswerGetResponse>()
+            });
+
+            var mockDataRepo = new Mock<IDataRepository>();
+            mockDataRepo
+                .Setup(repo => repo.GetQuestionsBySearchWithPaging("Test", 1, 20))
+                .Returns(() => mockQuestions.AsEnumerable());
+
+            var mockConfig = new Mock<IConfigurationRoot>();
+            mockConfig
+                .SetupGet(config => config[It.IsAny<string>()])
+                .Returns("String");
+
+            var questionsController = new QuestionsController(
+                mockDataRepo.Object,
+                null, null, null,
+                mockConfig.Object);
+
+            var result = questionsController.GetQuestions("Test", false);
+            Assert.Single(result);
+            mockDataRepo.Verify(mock => mock.GetQuestionsBySearchWithPaging("Test", 1, 20), Times.Once());
+        }
+
     }
 }
