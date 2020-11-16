@@ -4,6 +4,8 @@ import { Question } from './Question';
 import { QuestionData } from './QuestionData';
 import { BrowserRouter } from 'react-router-dom';
 
+afterEach(cleanup);
+
 test("When the Question component is rendered, it should contain the correct data", () => {
     const question: QuestionData = {
         questionId: 1,
@@ -29,7 +31,7 @@ test("When the Question component is rendered, it should contain the correct dat
 
     const userText = renderResult.getByText(/User1/);
     expect(userText).not.toBeNull();
-    
+
     const dateText = renderResult.getByText(/2019/);
     expect(dateText).not.toBeNull();
 });

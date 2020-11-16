@@ -2,6 +2,8 @@ import React from 'react';
 import { render, cleanup } from "@testing-library/react";
 import { Page } from './Page';
 
+afterEach(cleanup);
+
 test("When the Page component is rendered with a title, it should contain the correct title in the H2 element", () => {
     const title = "Test title";
 
