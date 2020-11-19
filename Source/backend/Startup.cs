@@ -61,8 +61,8 @@ namespace WebAPI
                     builder
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .WithOrigins("http://localhost:1337")
-                        .AllowCredentials();
+                        .AllowCredentials()
+                        .WithOrigins(Configuration["Frontend"]);
                 });
             });
 
