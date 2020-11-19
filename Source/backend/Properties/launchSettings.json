@@ -9,13 +9,12 @@
     }
   },
   "profiles": {
-    "IIS Express": {
+    "Local ISS Express (Development)": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "api/questions",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-        }
       }
     }
   }
