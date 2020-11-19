@@ -33,7 +33,16 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration["ConnectionStrings:SQLServerConnection_Local"];
+            var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            
+            // Get connection string injected by azure app service
+            var connectionString = Configuration["ConnectionStrings:SQLServerConnection_Azure"];
+            
+            if (envName == "Development")
+            {
+                // In development use local connection string
+                connectionString = Configuration["ConnectionStrings:SQLServerConnection_Local"];
+            }
 
             EnsureDatabase.For.SqlDatabase(connectionString);
 
