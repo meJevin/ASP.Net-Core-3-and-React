@@ -33,7 +33,7 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration["ConnectionStrings:SQLServerConnection_Local"];
+            var connectionString = Configuration.GetSQLServerConnectionString();
 
             EnsureDatabase.For.SqlDatabase(connectionString);
 
@@ -61,8 +61,8 @@ namespace WebAPI
                     builder
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .WithOrigins("http://localhost:1337")
-                        .AllowCredentials();
+                        .AllowCredentials()
+                        .WithOrigins(Configuration["Frontend"]);
                 });
             });
 
@@ -98,6 +98,10 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseCors("CorsPolicy");
 
@@ -113,6 +117,25 @@ namespace WebAPI
                 endpoints.MapControllers();
                 endpoints.MapHub<QuestionsHub>("/questionshub");
             });
+        }
+    }
+
+    public static class Utils
+    {
+        public static string GetSQLServerConnectionString(this IConfiguration configuration)
+        {
+            var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            // Get connection string injected by azure app service
+            var connectionString = configuration["ConnectionStrings:SQLServerConnection_Azure"];
+
+            if (envName == "Development")
+            {
+                // In development use local connection string
+                connectionString = configuration["ConnectionStrings:SQLServerConnection_Local"];
+            }
+
+            return connectionString;
         }
     }
 }

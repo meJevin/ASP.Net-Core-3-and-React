@@ -16,7 +16,7 @@ namespace WebAPI.Data
 
         public DataRepository(IConfiguration configuration)
         {
-            _connectionString = configuration["ConnectionStrings:SQLServerConnection_Local"];
+            _connectionString = configuration.GetSQLServerConnectionString();
         }
 
         public void DeleteQuestion(int questionId)
