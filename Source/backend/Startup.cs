@@ -98,6 +98,10 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseCors("CorsPolicy");
 
