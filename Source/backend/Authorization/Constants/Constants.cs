@@ -9,4 +9,10 @@ namespace WebAPI.Authorization.Constants
     {
         public  const string MustBeQuestionAuthor = "MustBeQuestionAuthor";
     }
+
+    public static class Auth0
+    {
+        public const string Authority = "https://dev-uhgue5d5.eu.auth0.com/";
+        public const string Audience = "https://qanda";
+    }
 }
