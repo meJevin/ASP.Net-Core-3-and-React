@@ -27,6 +27,8 @@ import {
     HubConnection
 } from '@aspnet/signalr';
 
+import { server } from './AppSettings';
+
 interface RouteParams {
     questionId: string;
 }
@@ -40,7 +42,7 @@ React.FC<RouteComponentProps<RouteParams>> = (props) => {
 
     const setUpSignalRConnection = async (questionId: number) => {
         const connection = new HubConnectionBuilder()
-            .withUrl("https://localhost:44316/questionshub")
+            .withUrl(`${server}/questionshub`)
             .withAutomaticReconnect()
             .build();
 
