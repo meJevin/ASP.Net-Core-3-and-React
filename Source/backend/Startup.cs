@@ -75,8 +75,8 @@ namespace WebAPI
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.Authority = Configuration["Auth0:Authority"];
-                options.Audience = Configuration["Auth0:Audience"];
+                options.Authority = Auth0.Authority;
+                options.Audience = Auth0.Audience;
             });
 
             services.AddHttpClient();
@@ -94,14 +94,8 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHttpsRedirection();
-            }
+            app.UseDeveloperExceptionPage();
+            app.UseHttpsRedirection();
 
             app.UseCors("CorsPolicy");
 

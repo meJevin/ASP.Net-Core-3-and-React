@@ -33,15 +33,14 @@ namespace WebAPI.Controllers
             IDataRepository dataRepository,
             IHubContext<QuestionsHub> questionHubContext,
             IQuestionCache cache,
-            IHttpClientFactory httpClientFactory,
-            IConfiguration configuration)
+            IHttpClientFactory httpClientFactory)
         {
             _dataRepository = dataRepository;
             _questionHubContext = questionHubContext;
             _cache = cache;
             _httpClientFactory = httpClientFactory;
 
-            _auth0UserInfo = $"{configuration["Auth0:Authority"]}userinfo";
+            _auth0UserInfo = $"{Auth0.Authority}userinfo";
         }
 
         [AllowAnonymous]

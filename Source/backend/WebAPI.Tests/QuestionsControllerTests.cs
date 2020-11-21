@@ -35,15 +35,9 @@ namespace WebAPI.Tests
                 .Setup(repo => repo.GetQuestions())
                 .Returns(() => mockQuestions.AsEnumerable());
 
-            var mockConfig = new Mock<IConfigurationRoot>();
-            mockConfig
-                .SetupGet(config => config[It.IsAny<string>()])
-                .Returns("String");
-
             var questionsController = new QuestionsController(
                 mockDataRepo.Object,
-                null, null, null,
-                mockConfig.Object);
+                null, null, null);
 
             var result = questionsController.GetQuestions(null, false);
 
@@ -77,8 +71,7 @@ namespace WebAPI.Tests
 
             var questionsController = new QuestionsController(
                 mockDataRepo.Object,
-                null, null, null,
-                mockConfig.Object);
+                null, null, null);
 
             var result = questionsController.GetQuestions("Test", false);
             Assert.Single(result);
@@ -105,8 +98,7 @@ namespace WebAPI.Tests
 
             var questionsController = new QuestionsController(
                 mockDataRepo.Object,
-                null, mockQuestionCache.Object, null,
-                mockConfig.Object);
+                null, mockQuestionCache.Object, null);
 
             var result = await questionsController.GetQuestion(1);
 
@@ -140,8 +132,7 @@ namespace WebAPI.Tests
 
             var questionsController = new QuestionsController(
                 mockDataRepo.Object,
-                null, mockQuestionCache.Object, null,
-                mockConfig.Object);
+                null, mockQuestionCache.Object, null);
 
             var result = await questionsController.GetQuestion(1);
 
