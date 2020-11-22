@@ -40,7 +40,11 @@ steps:
     ArtifactName: 'backend'
   displayName: 'backend publish to pipeline'
 
-- script: npm run test
+- script: npm install
+  workingDirectory: Source/frontend
+  displayName: 'frontend install dependencies'
+
+- script: npm run test:ci
   workingDirectory: Source/frontend
   displayName: 'frontend tests'
 
