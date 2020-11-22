@@ -1,4 +1,7 @@
 {
-    "baseUrl": "http://localhost:1337",
-    "chromeWebSecurity": false
+    "baseUrl": "https://stagingqandaapi.azurewebsites.net/",
+    "chromeWebSecurity": false,
+    "integrationFolder": "integration",
+    "pluginsFile": "plugins/index.js",
+    "supportFile": "support/index.js"
 }
