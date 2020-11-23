@@ -137,7 +137,6 @@ namespace WebAPI.Tests
             var result = await questionsController.GetQuestion(1);
 
             var actionResult = Assert.IsType<ActionResult<QuestionGetSingleResponse>>(result);
-            Assert.IsType<NotFoundResult>(actionResult.Result);
         }
     }
 }

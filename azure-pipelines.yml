@@ -27,7 +27,7 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: 'Source/backend/Release/netcoreapp3.1/publish'
+    rootFolderOrFile: 'Source/backend/bin/Release/netcoreapp3.1/publish'
     includeRootFolder: false
     archiveType: zip
     archiveFile: '$(Build.ArtifactStagingDirectory)/backend/$(Build.BuildId).zip'
@@ -39,6 +39,10 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/backend'
     ArtifactName: 'backend'
   displayName: 'backend publish to pipeline'
+
+- script: npm install
+  workingDirectory: Source/frontend
+  displayName: 'frontend install dependencies'
 
 - script: npm run test:ci
   workingDirectory: Source/frontend
