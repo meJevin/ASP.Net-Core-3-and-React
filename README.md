@@ -10,4 +10,4 @@ ASP.Net Core 3.1, DbUp, Dapper, SQLServer, SignalR, XUnit, Auth0.
 
 
 # Deployment & hosting
-Azure App Services, Azure MySQL Server
+Azure App Services, Azure SQL Server
