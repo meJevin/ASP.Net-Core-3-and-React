@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useState, FormEvent } from "react";
 import {UserIcon} from "./UserIcon";
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { fontFamily, fontSize, gray1, gray2, gray5 } from './Styles';

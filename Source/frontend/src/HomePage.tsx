@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { PrimaryButton } from "./Styles";
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { QuestionList } from "./QuestionList";

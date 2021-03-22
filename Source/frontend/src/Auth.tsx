@@ -6,7 +6,7 @@ createContext,
 FC,
 } from 'react';
 
-import createAuth0Client from '@auth0/auth0-spa-js';
+import createAuth0Client, { User } from '@auth0/auth0-spa-js';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import { authSettings } from './AppSettings';
 
@@ -25,8 +25,8 @@ interface IAuth0Context {
 
 export const Auth0Context = createContext<IAuth0Context>({
     isAuthenticated: false,
-    signIn: () => {},
-    signOut: () => {},
+    signIn: () => { return; },
+    signOut: () => { return; },
     loading: true
 });
 
@@ -62,7 +62,10 @@ export const AuthProvider: FC = (props) => {
             const isAuthenticatedFromHook = await auth0FromHook.isAuthenticated();
             if (isAuthenticatedFromHook) {
                 const user = await auth0FromHook.getUser();
-                setUser(user);
+
+                if (user && user.name && user.email) {
+                    setUser({name: user.name, email: user.email});
+                }
             }
             setIsAuthenticated(isAuthenticatedFromHook);
 

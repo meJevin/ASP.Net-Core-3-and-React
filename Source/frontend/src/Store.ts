@@ -145,7 +145,7 @@ const questionReducer: Reducer<QuestionState, QuestionsActions> = (
     return state;
 }
 
-const neverReached = (never: never) => {};
+const neverReached = (never: never) => { return; };
 
 const rootReducer = combineReducers<AppState>({
    questions: questionReducer 

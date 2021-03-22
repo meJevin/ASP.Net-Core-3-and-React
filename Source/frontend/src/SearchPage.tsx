@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Page } from './Page';
 import { QuestionList } from './QuestionList';
 import { searchQuestions, QuestionData } from './QuestionData';
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
@@ -32,7 +33,7 @@ export const SearchPage: React.FC<RouteComponentProps> = (props) => {
                 margin-top: 0px;
             `}
             >
-                for "{search}"
+                for {search}
             </p>
             )}
             <QuestionList data={questions} />

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { AnswerData } from './QuestionData';
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { Answer } from './Answer';

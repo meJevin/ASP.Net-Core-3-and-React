@@ -1,4 +1,5 @@
 import { FC } from 'react';
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { gray5, accent2 } from './Styles';

@@ -11,6 +11,7 @@ import {
 } from './QuestionData';
 
 import { useState, Fragment, useEffect } from 'react';
+/** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 import { gray3, gray6 } from './Styles';
